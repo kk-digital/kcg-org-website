@@ -1,0 +1,54 @@
+dist: xenial
+matrix:
+  include:
+    - languange: node_js
+
+      node_js:
+      - "16.15"
+
+      before_script:
+        - cat package.json
+
+      script:
+        - npm install
+        - grunt lunr-index
+
+      cache:
+        directories:
+        - "node_modules"
+
+    - language: go
+
+      go:
+      - '1.16.x'
+
+      install:
+      - mkdir $HOME/src
+      - cd $HOME/src
+      - curl -LO https://github.com/gohugoio/hugo/releases/download/v0.99.0/hugo_0.99.0_Linux-64bit.deb
+      - sudo dpkg -i hugo_0.99.0_Linux-64bit.deb
+      - cd $TRAVIS_BUILD_DIR
+      - sudo pip install Pygments
+      - sudo pip install s3cmd
+
+      before_script:
+      - hugo version
+      - pygmentize -V
+      - python --version
+      - s3cmd --version
+
+      script:
+      # - export CSS_VERSION=$(date +%s)
+      # - mv themes/kk-digital/static/css/main.css themes/kk-digital/static/css/main-$CSS_VERSION.css # make sure to use correct name for the theme
+      # - hugo --buildFuture --config config.toml --destination public -v
+
+      # after_success:
+      # - ls public/
+      # - cat public/index.html
+
+      # deploy:
+      #   skip_cleanup: true
+      #   provider: script
+        # script: add script here to upload /public and css files to Linode with s3cmd
+        # on:
+          # branch: master
